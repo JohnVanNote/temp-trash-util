@@ -1,0 +1,28 @@
+#!/bin/bash
+# temprm
+#
+# John Van Note
+# Updated 2016-09-26
+#
+# Temporary delete ulitity
+
+# Makes sure the trash file is the on it's supposed to be
+TRASH=$HOME/.trash
+
+# "Safe deletes" the files from the command like
+until [ "$#" == "0" ] # Makes sure all command line files are recorded
+do
+		name=$(date +"%y-%m-%d %H.%M.%S") # renames the file   
+    tar -czPf $1.tgz $1 # tars and gzips file,
+		# -c creates or truncates and already created file
+		# -z gzips the file
+		# -P is for full pathname
+		# -f is for file archive
+    mv $1.tgz $TRASH/"$name".tgz # renames file
+    rm $1
+shift # continues the movement down the lines of input
+done
+
+# Deletes files in the ./trash folder older than 48 hrs
+cd $TRASH
+find . -mtime +2 -exec rm -f {} \; 
